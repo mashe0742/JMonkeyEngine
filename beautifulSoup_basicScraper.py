@@ -2,6 +2,8 @@
 Experimenting with BeautifulSoup to pull data from reuters,
 then search for and return all frontpage headlines
 
+pulled headlines will be run through limited analysis using nltk
+
 Written by Michael Ashe
 """
 
@@ -13,6 +15,20 @@ except ImportError:
 
 from bs4 import BeautifulSoup
 import re
+#nltk processing dependencies
+import nltk
+nltk.download('popular')
+from nltk.corpus import stopwords
+stop_words=set(stopwords.words("english"))
+import random
+from nltk.classify.scikitlearn import SklearnClassifier
+import pickle
+from sklearn.naive_bayes import MultinomialNB, BernoulliNB
+#from sklearn.linear_model import LogisticRegression, SGDCLassifier
+from nltk.classify import ClassifierI
+from statistics import mode
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
 
 #variable for url of page and dictionary to store headlines
 target_page = 'https://www.reuters.com/'
@@ -39,17 +55,27 @@ for tag in tags:
             row+=1
         
 #formatting to test output from json object to ensure sanitation of text
-#delete this for passing on to do further parsing of data from json
 print("Headlines Retrieved:\n")
 count=0
 
 #sanitation to remove artifacts of scrape
 headlinesDictCleaned = {k: v for k, v in headlinesDict.items() if v is not None}
 
+#begin processing of text for use with nltk analysis
 for element in headlinesDict:
     try:
         print('headline %s: %s' %(count,headlinesDictCleaned[count]))
+        #tokenize each headline into sentences, then words
+        tokenized_word = [word for sent in sent_tokenize(headlinesDictCleaned[count]) for word in word_tokenize(sent)]
+        filtered_tokens = []
+        for w in tokenized_word:
+            if w not in stop_words:
+                filtered_tokens.append(w)
+        print(filtered_tokens)
         count+=1
     except:
         print('Exception!')
+        count+=1
         continue
+    
+    
