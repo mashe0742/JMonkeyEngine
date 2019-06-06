@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 import re
 #nltk processing dependencies
 import nltk
-nltk.download('popular')
+#nltk.download('popular')
 from nltk.corpus import stopwords
 stop_words=set(stopwords.words("english"))
 import random
@@ -68,10 +68,10 @@ for element in headlinesDict:
         #tokenize each headline into sentences, then words
         tokenized_word = [word for sent in sent_tokenize(headlinesDictCleaned[count]) for word in word_tokenize(sent)]
         filtered_tokens = []
+        #remove stopwords to save processing time
         for w in tokenized_word:
             if w not in stop_words:
                 filtered_tokens.append(w)
-        print(filtered_tokens)
         count+=1
     except:
         print('Exception!')
