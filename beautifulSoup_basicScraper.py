@@ -12,7 +12,6 @@ try:
 except ImportError:
     import urllib2
 
-import requests
 from bs4 import BeautifulSoup
 
 #variable for url of page
