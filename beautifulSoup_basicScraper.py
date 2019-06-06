@@ -18,9 +18,7 @@ import re
 #nltk processing dependencies
 import nltk
 import pprint
-nltk.download('vader_lexicon')
-from nltk.corpus import stopwords
-stop_words=set(stopwords.words("english"))
+#nltk.download('vader_lexicon')
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -53,10 +51,6 @@ for tag in tags:
         if not any (value in headline for value in ("\n")):
             headlinesDict[row]=headline
             row+=1
-        
-#formatting to test output from json object to ensure sanitation of text
-print("Headlines Retrieved:\n")
-count=0
 
 #sanitation to remove artifacts of scrape
 headlinesDictCleaned = {k: v for k, v in headlinesDict.items() if v is not None}
@@ -71,5 +65,12 @@ for key, value in headlinesDictCleaned.items():
     pol_score['headline'] = value
     results.append(pol_score)
 
-pprint.pprint(results, width=100)
+#push to pandas
+df = pd.DataFrame.from_records(results)
+df['label'] = 0
+#label data as positive, neutral, or negative based on compound score
+df.loc[df['compound'] > 0.2, 'label'] = 1
+df.loc[df['compound'] < -0.2, 'label'] = -1
 
+df2 = df[['headline', 'label']]
+df2.to_csv('reuters_headline_labels.csv', mode='a',encoding='utf-8',index=False)
