@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Experimenting with BeautifulSoup to pull data from reuters,
 then search for and return all frontpage headlines
@@ -27,4 +26,9 @@ page = response
 #use beautifulsoup parser to read page
 soup = BeautifulSoup(page, 'html.parser')
 
-print(soup)
+#parse html response looking for Reuters article tag, then save off all headlines
+tags = soup.find_all('article')
+for tag in tags:
+    #drop time stamps, unwanted header lines
+    if not any(value in tag.text for value in ("pm EDT", "h ago", "m ago", "Editor's Choice", "SUSTAINABLE BUSINESS", "SECTORS UP CLOSE")):
+        print(tag.text.strip())
