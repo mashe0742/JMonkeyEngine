@@ -4,7 +4,8 @@ and analyze sentiment, in order to explore differences in
 headlines written by mainstream news source vs headlines displayed on 
 Reddit.
 
-@author: Michael Ashe
+@author: Michael Ashe, modified code from Brendan Martin and Nikos Koufos at
+LearnDataSci
 """
 
 
