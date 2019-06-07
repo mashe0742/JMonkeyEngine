@@ -1,11 +1,12 @@
 """
-Experimenting with BeautifulSoup to pull data from reuters,
-then search for and return all frontpage headlines
-
-pulled headlines will be run through limited analysis using nltk
+Clone of Reuters scraper to take headlines instead from Reddit
+and analyze sentiment, in order to explore differences in 
+headlines written by mainstream news source vs headlines displayed on 
+Reddit.
 
 @author: Michael Ashe
 """
+
 
 #libraries
 try:
