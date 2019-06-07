@@ -17,7 +17,6 @@ from bs4 import BeautifulSoup
 import re
 #nltk processing dependencies
 import nltk
-import pprint
 #nltk.download('vader_lexicon')
 import pandas as pd
 import numpy as np
@@ -25,8 +24,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style='darkgrid', context='talk', palette='Dark2')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
-from nltk.tokenize import word_tokenize
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
+from nltk.corpus import stopwords
+stop_words = stopwords.words("english")
+
+#function for tokenization and cleaning of headlines
+def process_text(headlines):
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = []
+    for key, value in headlines.items():
+        toks = tokenizer.tokenize(value)
+        toks = [t.lower() for t in toks if t.lower() not in stop_words]
+        tokens.extend(toks)
+    
+    return toks
 
 #variable for url of page and dictionary to store headlines
 target_page = 'https://www.reuters.com/'
@@ -78,12 +89,15 @@ df2 = df[['headline', 'label']]
 print(df2.label.value_counts)
 print(df2.label.value_counts(normalize=True)*100)
 
-#plot bar graph
-#figsize = (8,8)
+#plot bar graph of results from sentiment analysis - Pos, Neut, Neg
 fig, ax = plt.subplots()
 counts = df.label.value_counts(normalize = True) * 100
 sns.barplot(x=counts.index, y=counts, ax=ax)
+#formatting of chart
+ax.set_title("Distribution of Reuters Headlines (% of whole)")
 ax.set_xticklabels(['Negative', 'Neutral', 'Positive'])
-ax.set_ylable("Percentage")
+ax.set_ylabel("Percentage")
 
 plt.show()
+
+#tokenize sentences and perform follow-on analysis
