@@ -72,5 +72,18 @@ df['label'] = 0
 df.loc[df['compound'] > 0.2, 'label'] = 1
 df.loc[df['compound'] < -0.2, 'label'] = -1
 
+#save to csv file
 df2 = df[['headline', 'label']]
-df2.to_csv('reuters_headline_labels.csv', mode='a',encoding='utf-8',index=False)
+#df2.to_csv('reuters_headline_labels.csv', mode='a',encoding='utf-8',index=False)
+print(df2.label.value_counts)
+print(df2.label.value_counts(normalize=True)*100)
+
+#plot bar graph
+#figsize = (8,8)
+fig, ax = plt.subplots()
+counts = df.label.value_counts(normalize = True) * 100
+sns.barplot(x=counts.index, y=counts, ax=ax)
+ax.set_xticklabels(['Negative', 'Neutral', 'Positive'])
+ax.set_ylable("Percentage")
+
+plt.show()
