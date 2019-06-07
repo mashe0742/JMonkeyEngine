@@ -9,23 +9,16 @@ Reddit.
 
 
 #libraries
-try:
-    import urllib.request as urllib2
-except ImportError:
-    import urllib2
-
-from bs4 import BeautifulSoup
-import re
 #nltk processing dependencies
 import nltk
 #nltk.download('vader_lexicon')
 import pandas as pd
-import numpy as np
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style='darkgrid', context='talk', palette='Dark2')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
-from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
+from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 stop_words = stopwords.words("english")
 import praw
@@ -44,7 +37,7 @@ def process_text(headlines):
 #connect to reddit API using PRAW
 reddit = praw.Reddit(client_id='CLIENT ID',
                      client_secret='CLIENT SECRET',
-                     user_agent='USERNAME')
+                     user_agent='USER ID')
 
 #actual connection to defined subreddit, retrieve 1000 new posts
 headlines = set()
@@ -58,9 +51,9 @@ sia = SIA()
 results = []
 
 #analyze headlines
-for key, value in headlinesDictCleaned.items():
-    pol_score = sia.polarity_scores(value)
-    pol_score['headline'] = value
+for line in headlines:
+    pol_score = sia.polarity_scores(line)
+    pol_score['headline'] = line
     results.append(pol_score)
 
 #push to pandas
@@ -81,7 +74,7 @@ fig, ax = plt.subplots()
 counts = df.label.value_counts(normalize = True) * 100
 sns.barplot(x=counts.index, y=counts, ax=ax)
 #formatting of chart
-ax.set_title("Distribution of Reuters Headlines (% of whole)")
+ax.set_title("Distribution of /r/politics Headlines (% of whole)")
 ax.set_xticklabels(['Negative', 'Neutral', 'Positive'])
 ax.set_ylabel("Percentage")
 
@@ -89,8 +82,6 @@ plt.show()
 
 #tokenize sentences and perform follow-on analysis
 pos_lines = list(df2[df2.label == 1].headline)
-
-print(pos_lines)
 
 pos_tokens = process_text(pos_lines)
 pos_freq = nltk.FreqDist(pos_tokens)
@@ -106,4 +97,19 @@ plt.plot(y_val)
 plt.xlabel("Words")
 plt.ylabel("Frequency")
 plt.title("Word Frequency Distribution (Positive)")
+plt.show()
+
+#log-log plot to simplify interpretation of distribution data
+y_final = []
+for i, k, z, t in zip(y_val[0::4], y_val[1::4], y_val[2::4], y_val[3::4]):
+    y_final.append(math.log(i+k+z+t))
+
+x_val = [math.log(i+1) for i in range(len(y_final))]
+
+fig = plt.figure(figsize=(10,5))
+
+plt.xlabel("Words (Log)")
+plt.ylabel("Frequency (Log)")
+plt.title("Word Frequency Distribution, Log (Positive)")
+plt.plot(x_val, y_final)
 plt.show()
