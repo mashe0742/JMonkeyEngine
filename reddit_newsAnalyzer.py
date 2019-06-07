@@ -37,13 +37,13 @@ def process_text(headlines):
 
 #connect to reddit API using PRAW
 reddit = praw.Reddit(client_id='CLIENT ID',
-                     client_secret='CLIENT PRIVATE',
+                     client_secret='SECRET',
                      user_agent='USERNAME')
 
 #actual connection to defined subreddit, retrieve 1000 new posts
 headlines = set()
 
-for submission in reddit.subreddit('politics').new(limit=None):
+for submission in reddit.subreddit('the_donald').new(limit=None):
     headlines.add(submission.title)
     print(len(headlines))
 
@@ -66,7 +66,7 @@ df.loc[df['compound'] < -0.2, 'label'] = -1
 
 #save to csv file
 df2 = df[['headline', 'label']]
-#df2.to_csv('reuters_headline_labels.csv', mode='a',encoding='utf-8',index=False)
+df2.to_csv('reddit_headline_labels.csv', mode='a',encoding='utf-8',index=False)
 
 print(df2.label.value_counts(normalize=True)*100)
 
@@ -75,7 +75,7 @@ fig, ax = plt.subplots()
 counts = df.label.value_counts(normalize = True) * 100
 sns.barplot(x=counts.index, y=counts, ax=ax)
 #formatting of chart
-ax.set_title("Distribution of /r/politics Headlines (% of whole)")
+ax.set_title("Distribution of /r/the_donald Headlines (% of whole)")
 ax.set_xticklabels(['Negative', 'Neutral', 'Positive'])
 ax.set_ylabel("Percentage")
 
@@ -129,7 +129,7 @@ y_val = [x[1] for x in neg_freq.most_common()]
 fig = plt.figure(figsize=(10,5))
 plt.plot(y_val)
 
-plt.xlabel("words")
+plt.xlabel("Words")
 plt.ylabel("Frequency")
 plt.title("Word Frequency Distribution (Negative)")
 plt.show()
