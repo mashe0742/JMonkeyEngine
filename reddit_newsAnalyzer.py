@@ -40,9 +40,9 @@ def process_text(headlines):
     return tokens
 
 #connect to reddit API using PRAW
-reddit = praw.Reddit(client_id='foMSzwwni1VFDA',
-                     client_secret='Sa7VVVM2METy-azHWBECm6lMTLo',
-                     user_agent='strider_sifurowuh')
+reddit = praw.Reddit(client_id='CLIENTID',
+                     client_secret='SECRET',
+                     user_agent='USERNAME')
 
 #actual connection to defined subreddit, retrieve 1000 new posts
 headlines = set()
