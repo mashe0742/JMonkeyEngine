@@ -23,3 +23,4 @@
 - Increase training data set
 - Implement GPU acceleration
 ------
+Text classifier scripts made by following and modifying tutorials from https://www.learndatasci.com/tutorials
