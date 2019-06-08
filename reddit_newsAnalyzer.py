@@ -12,17 +12,21 @@ LearnDataSci
 #libraries
 #nltk processing dependencies
 import nltk
-#nltk.download('vader_lexicon')
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style='darkgrid', context='talk', palette='Dark2')
+#nltk components
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 stop_words = stopwords.words("english")
+#reddit processing
 import praw
+import os
+
+os.mkdir('plots')
 
 #function for tokenization and cleaning of headlines
 def process_text(headlines):
@@ -36,9 +40,9 @@ def process_text(headlines):
     return tokens
 
 #connect to reddit API using PRAW
-reddit = praw.Reddit(client_id='CLIENT ID',
-                     client_secret='SECRET',
-                     user_agent='USERNAME')
+reddit = praw.Reddit(client_id='foMSzwwni1VFDA',
+                     client_secret='Sa7VVVM2METy-azHWBECm6lMTLo',
+                     user_agent='strider_sifurowuh')
 
 #actual connection to defined subreddit, retrieve 1000 new posts
 headlines = set()
@@ -78,8 +82,7 @@ sns.barplot(x=counts.index, y=counts, ax=ax)
 ax.set_title("Distribution of /r/the_donald Headlines (% of whole)")
 ax.set_xticklabels(['Negative', 'Neutral', 'Positive'])
 ax.set_ylabel("Percentage")
-
-plt.show()
+plt.savefig('plots/subreddit_sentiment_distribution.png')
 
 #tokenize sentences and perform follow-on analysis
 pos_lines = list(df2[df2.label == 1].headline)
@@ -98,7 +101,7 @@ plt.plot(y_val)
 plt.xlabel("Words")
 plt.ylabel("Frequency")
 plt.title("Word Frequency Distribution (Positive)")
-plt.show()
+plt.savefig('plots/positive_word_distribution.png')
 
 #log-log plot to simplify interpretation of distribution data
 y_final = []
@@ -113,7 +116,7 @@ plt.xlabel("Words (Log)")
 plt.ylabel("Frequency (Log)")
 plt.title("Word Frequency Distribution, Log (Positive)")
 plt.plot(x_val, y_final)
-plt.show()
+plt.savefig('plots/positive_word_distribution_log.png')
 
 #Analyze negative headlines, word distributions
 neg_lines = list(df2[df2.label == -1].headline)
@@ -132,7 +135,7 @@ plt.plot(y_val)
 plt.xlabel("Words")
 plt.ylabel("Frequency")
 plt.title("Word Frequency Distribution (Negative)")
-plt.show()
+plt.savefig('plots/negative_word_distribution.png')
 
 #generate log-log plot of negative word distribution
 y_final = []
@@ -149,4 +152,4 @@ plt.xlabel("Words (Log)")
 plt.ylabel("Frequency (Log)")
 plt.title("Word Frequency Distribution, Log (Negative)")
 plt.plot(x_val, y_final)
-plt.show()
+plt.savefig('plots/negative_word_distribution_log.png')
