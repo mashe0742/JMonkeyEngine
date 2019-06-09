@@ -21,7 +21,10 @@ subCount = 0
 #connect to reddit API using pushshift
 #note that before and after date must be in epoch time
 def getPushShiftData(query, after, before, sub):
-    url= 'https://api.pushshift.io/reddit/search/submission/?q='+str(query)+'&after='+str(after)+'&before='+str(before)+'&subreddit='+str(sub)
+    if not query:
+        url= 'https://api.pushshift.io/reddit/search/submission/?after='+str(after)+'&size=1000&before='+str(before)+'&subreddit='+str(sub)
+    else:
+        url= 'https://api.pushshift.io/reddit/search/submission/?q='+str(query)+'&after='+str(after)+'&size=1000&before='+str(before)+'&subreddit='+str(sub)
     r = requests.get(url)
     data = json.loads(r.text)
     return data['data']

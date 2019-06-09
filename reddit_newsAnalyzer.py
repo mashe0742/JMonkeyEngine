@@ -52,7 +52,6 @@ results = []
 #analyze headlines
 entryCounter = 0
 for entry in titles:
-    print(entry)
     pol_score = sia.polarity_scores(entry)
     pol_score['headline'] = entry
     results.append(pol_score)
