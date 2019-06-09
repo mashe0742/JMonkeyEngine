@@ -5,7 +5,12 @@ headlines written by mainstream news source vs headlines displayed on
 Reddit.
 
 @author: Michael Ashe, modified code from Brendan Martin and Nikos Koufos at
-LearnDataSci
+LearnDataSci to use pushshift.io API in order to retrieve larger sets of Reddit
+titles from an arbitrary subreddit. Use reddit_dataRetrieval.py to get data.
+
+this script will create a set of plots covering distribution of words analyzed
+by the vader sentiment analyzer as well as saving off a copy of the scoring data
+to csv.
 """
 
 #libraries
