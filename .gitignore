@@ -1,6 +1,6 @@
 #don't track the contents of these folders
 plots/
 
-#ignore these types of files
+Reddit_Data/#ignore these types of files
 *.xlsx
 *.csv

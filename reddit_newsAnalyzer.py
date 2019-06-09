@@ -8,7 +8,6 @@ Reddit.
 LearnDataSci
 """
 
-
 #libraries
 #nltk processing dependencies
 import nltk
@@ -22,11 +21,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 stop_words = stopwords.words("english")
-#reddit processing
-import praw
 import os
-
-os.mkdir('plots')
 
 #function for tokenization and cleaning of headlines
 def process_text(headlines):
@@ -39,27 +34,24 @@ def process_text(headlines):
     
     return tokens
 
-#connect to reddit API using PRAW
-reddit = praw.Reddit(client_id='CLIENTID',
-                     client_secret='SECRET',
-                     user_agent='USERNAME')
-
-#actual connection to defined subreddit, retrieve 1000 new posts
-headlines = set()
-
-for submission in reddit.subreddit('the_donald').new(limit=None):
-    headlines.add(submission.title)
-    print(len(headlines))
+#read in data from csv, changing directory to where it was saved by reddit_dataRetrieval
+os.chdir('Reddit_Data')
+df = pd.read_csv('redditTestData.csv', encoding='utf-8')
+titles = df['Title']
+os.chdir('..')
 
 #set up sentiment analyzer
 sia = SIA()
 results = []
 
 #analyze headlines
-for line in headlines:
-    pol_score = sia.polarity_scores(line)
-    pol_score['headline'] = line
+entryCounter = 0
+for entry in titles:
+    print(entry)
+    pol_score = sia.polarity_scores(entry)
+    pol_score['headline'] = entry
     results.append(pol_score)
+    entryCounter+=1
 
 #push to pandas
 df = pd.DataFrame.from_records(results)
@@ -70,7 +62,7 @@ df.loc[df['compound'] < -0.2, 'label'] = -1
 
 #save to csv file
 df2 = df[['headline', 'label']]
-df2.to_csv('reddit_headline_labels.csv', mode='a',encoding='utf-8',index=False)
+#df2.to_csv('reddit_headline_labels.csv', mode='a',encoding='utf-8',index=False)
 
 print(df2.label.value_counts(normalize=True)*100)
 
