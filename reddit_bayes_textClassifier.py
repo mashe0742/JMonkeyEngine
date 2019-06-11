@@ -5,10 +5,6 @@ Created on Fri Jun  7 16:12:09 2019
 LearnDataSci
 """
 
-import math
-import random
-from collections import defaultdict
-from pprint import pprint
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
@@ -18,7 +14,6 @@ from imblearn.over_sampling import SMOTE
 import warnings
 warnings.filterwarnings(action='ignore')
 import seaborn as sns
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
