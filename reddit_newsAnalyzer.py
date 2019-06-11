@@ -26,7 +26,13 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 stop_words = stopwords.words("english")
+#system dependencies, report generation
 import os
+from jinja2 import Environment, FileSystemLoader
+from weasyprint import HTML
+env = Environment(loader=FileSystemLoader('.'))
+template = env.get_template("reportTemplate.html")
+template_vars = {"title" : "Text Mining Results - /r/The_Donald"}
 
 #function for tokenization and cleaning of headlines
 def process_text(headlines):
@@ -75,17 +81,15 @@ fig, ax = plt.subplots()
 counts = df.label.value_counts(normalize = True) * 100
 sns.barplot(x=counts.index, y=counts, ax=ax)
 #formatting of chart
-ax.set_title("Distribution of /r/the_donald Headlines (% of whole)")
+ax.set_title("Distribution of /r/The_Donald Headlines (% of whole)")
 ax.set_xticklabels(['Negative', 'Neutral', 'Positive'])
 ax.set_ylabel("Percentage")
 plt.savefig('plots/subreddit_sentiment_distribution.png')
 
 #tokenize sentences and perform follow-on analysis
 pos_lines = list(df2[df2.label == 1].headline)
-
 pos_tokens = process_text(pos_lines)
 pos_freq = nltk.FreqDist(pos_tokens)
-
 print(pos_freq.most_common(20))
 
 #plot frequency distribution to discern patterns from words
@@ -149,3 +153,7 @@ plt.ylabel("Frequency (Log)")
 plt.title("Word Frequency Distribution, Log (Negative)")
 plt.plot(x_val, y_final)
 plt.savefig('plots/negative_word_distribution_log.png')
+
+#render html, then save as pdf
+html_out = template.render(template_vars)
+HTML(string=html_out).write_pdf("report.pdf")
