@@ -30,6 +30,7 @@ stop_words = stopwords.words("english")
 import os
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
+from urllib import request
 env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template("reportTemplate.html")
 template_vars = {"title" : "Text Mining Results - /r/The_Donald"}
@@ -155,5 +156,6 @@ plt.plot(x_val, y_final)
 plt.savefig('plots/negative_word_distribution_log.png')
 
 #render html, then save as pdf
-html_out = template.render(template_vars)
-HTML(string=html_out).write_pdf("report.pdf")
+user = request.user
+rendered_html = template.render(template_vars).encode(encoding="UTF-8")
+HTML(string=rendered_html, base_url=request.build_absolute_uri()).write_pdf('report.pdf',presentational_hints=True)
