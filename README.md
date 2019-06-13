@@ -1,4 +1,4 @@
-# Project-Snippets
+# Reddit Scraper
 ------
 ## beautifulSoup_basicScraper
 ### Experiment with BeautifulSoup to write a parser that will take headlines from the front page of Reuters and then create a word cloud from them.
