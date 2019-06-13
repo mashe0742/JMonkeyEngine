@@ -28,13 +28,23 @@ from nltk.corpus import stopwords
 stop_words = stopwords.words("english")
 #system dependencies, report generation
 import os
-from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML
-from urllib import request
-env = Environment(loader=FileSystemLoader('.'))
-template = env.get_template("reportTemplate.html")
-template_vars = {"title" : "Text Mining Results - /r/The_Donald"}
+from xhtml2pdf import pisa
+from io import StringIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
 
+#report printing function from html template to pdf
+def html_to_pdf_directly(request):
+    template = get_template("reportTemplate.html")
+    context = Context({'pagesize':'A4'})
+    html = template.render(context)
+    result = StringIO.StringIO()
+    pdf = pisa.pisaDocument(StringIO.StringIO(html), dest=result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    else: return HttpResponse('Errors')
+    
 #function for tokenization and cleaning of headlines
 def process_text(headlines):
     tokenizer = RegexpTokenizer(r'\w+')
@@ -154,8 +164,3 @@ plt.ylabel("Frequency (Log)")
 plt.title("Word Frequency Distribution, Log (Negative)")
 plt.plot(x_val, y_final)
 plt.savefig('plots/negative_word_distribution_log.png')
-
-#render html, then save as pdf
-user = request.user
-rendered_html = template.render(template_vars).encode(encoding="UTF-8")
-HTML(string=rendered_html, base_url=request.build_absolute_uri()).write_pdf('report.pdf',presentational_hints=True)
