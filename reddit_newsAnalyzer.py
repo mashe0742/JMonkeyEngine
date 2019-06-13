@@ -28,23 +28,8 @@ from nltk.corpus import stopwords
 stop_words = stopwords.words("english")
 #system dependencies, report generation
 import os
-from xhtml2pdf import pisa
-from io import StringIO
-from django.http import HttpResponse
-from django.template.loader import get_template
-from django.template import Context
 
-#report printing function from html template to pdf
-def html_to_pdf_directly(request):
-    template = get_template("reportTemplate.html")
-    context = Context({'pagesize':'A4'})
-    html = template.render(context)
-    result = StringIO.StringIO()
-    pdf = pisa.pisaDocument(StringIO.StringIO(html), dest=result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    else: return HttpResponse('Errors')
-    
+
 #function for tokenization and cleaning of headlines
 def process_text(headlines):
     tokenizer = RegexpTokenizer(r'\w+')

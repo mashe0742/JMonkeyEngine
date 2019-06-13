@@ -4,3 +4,4 @@ plots/
 Reddit_Data/#ignore these types of files
 *.xlsx
 *.csv
+*.pdf
